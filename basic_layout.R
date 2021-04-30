@@ -9,15 +9,19 @@ habitats <- read.csv("www/habitats.csv")
 
 #define ui ----
 
-ui <- fluidPage(titlePanel("title panel"),
+ui <- fluidPage(titlePanel("UK Habitat Summary"),
                 
                 sidebarLayout(
-                  sidebarPanel("MySidebar", h3("a button"), actionButton(inputId = "my_submitstatus", label="Submit"), position = "left", checkboxGroupInput(inputId = "my_checkgroup", 
+                  sidebarPanel("", position = "left", radioButtons(inputId = "my_checkgroup", 
                                                                                                                                                              h3("Checkbox group"), 
                                                                                                                                                              choices = list("Woodland" = 1, 
                                                                                                                                                                             "Grassland" = 2, 
                                                                                                                                                                             "Urban" = 3),
-                                                                                                                                                             selected = 1)),
+                                                                                                                                                             selected = 1), sliderInput("bins",
+                                                                                                                                                                                       "Number of bins:",
+                                                                                                                                                                                       min = 1,
+                                                                                                                                                                                       max = 50,
+                                                                                                                                                                                       value = 30)),
                                
                 
                     mainPanel(
@@ -29,13 +33,12 @@ ui <- fluidPage(titlePanel("title panel"),
 
 #define server ----
 
-server <- function(input, output) {output$habitats_plot <- renderPlot(
-  hist(habitats[,1])
-)
-
-                                                
-  
+server <- function(input, output) {
+  output$habitats_plot <- renderPlot(
+    hist(habitats[,as.numeric(input$my_checkgroup)])
+  )
 }
+
 
 #run the app ----
 
